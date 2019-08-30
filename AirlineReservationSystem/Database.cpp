@@ -31,4 +31,24 @@ namespace AirlineReseravtion {
 			flight.display();
 		}
 	}
+
+	//Passenger Class Methods
+
+	Passenger& Database::addPassenger(const string& firstName, const string& lastName, const string& gender, const string& emailId,
+		const string& address, const string& city, const string& state, const string& postalCode, const string& phoneNumber) {
+
+		Passenger thePassenger(firstName, lastName, gender, emailId, address, city, state, postalCode, phoneNumber);
+		mPassengers.push_back(thePassenger);
+		return mPassengers[mPassengers.size() - 1];
+	}
+
+	Passenger& Database::getPassengerInfo(const string& emailID)
+	{
+		for (auto& passenger : mPassengers)
+		{
+			if (passenger.getEmailId() == emailID){ return passenger; }
+				
+		}
+		throw logic_error("No Passenger found");
+	}
 }

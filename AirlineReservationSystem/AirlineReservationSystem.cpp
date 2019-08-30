@@ -11,6 +11,7 @@ using namespace AirlineReseravtion;
 int DisplayMenu();
 void addFlight(Database& db);
 void getFlightSchedule(Database& db);
+void getPassengerInfo(Database& db);
 vector<string> split(string str, string sep);
 char ch;
 int main()
@@ -32,6 +33,7 @@ int main()
 			flightDB.displayAllFlights();
 			break;
 		case 4:
+			getPassengerInfo(flightDB);
 			break;
 		case 5:
 			break;
@@ -101,20 +103,21 @@ void addFlight(Database& db)
 
 	cout << "numberofStops :";
 	cin >> numberofStops;
-	string stoploc;
-	int stopdur;
-	for (int i = 0; i < numberofStops; i++)
-	{
-		cout << "enter the" << i + 1 << "th stop location :";
-		cin >> stoploc;
-		stopLocation.push_back(stoploc);
+	if (numberofStops > 0) {
+		string stoploc;
+		int stopdur;
+		for (int i = 0; i < numberofStops; i++)
+		{
+			cout << "enter the" << i + 1 << "th stop location :";
+			cin >> stoploc;
+			stopLocation.push_back(stoploc);
 
-		cout << "enter the" << i + 1 << "th stop duration :";
-		cin >> stopdur;
-		stopDuration.push_back(stopdur);
+			cout << "enter the" << i + 1 << "th stop duration :";
+			cin >> stopdur;
+			stopDuration.push_back(stopdur);
 
+		}
 	}
-
 	db.addFlight(flightNumber, airways, source, destination, availableSeats, departureDate, departureTime, arrivalDate, arrivalTime, numberofStops, stopLocation, stopDuration);
 }
 //split function
@@ -148,7 +151,24 @@ void getFlightSchedule(Database& db)
 	auto& stopDuration = flight.getStopDuration();
 	for (int i = 0; i < stops; i++)
 	{
-		cout << "Stop Location :" << stopLocation[i] << "Duration :" << stopDuration[i] << "Minutes" << endl;
+		cout << "Stop Location :" << stopLocation[i] << " Duration :" << stopDuration[i] << "Minutes" << endl;
 	}
 		
+}
+void getPassengerInfo(Database& db)
+{
+	string emailId;
+	cout << "Please enter the emailID" << endl;
+	cin >> emailId;
+	Passenger passenger = db.getPassengerInfo(emailId);
+	cout << "First Name: " << passenger.getFirstName()<<endl;
+	cout << "Last Name: " << passenger.getLastName()<<endl;
+	cout << "Gender: " << passenger.getGender() << endl;
+	cout << "Address: " << passenger.getAddress() << endl;
+	cout << "City: " << passenger.getCity() << endl;
+	cout << "State: " << passenger.getState() << endl;
+	cout << "PostalCode: " << passenger.getPostalCode() << endl;
+	cout << "Phone Number: " << passenger.getPhoneNumber() << endl;
+
+
 }

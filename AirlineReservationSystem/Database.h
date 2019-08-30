@@ -2,6 +2,7 @@
 #include<iostream>
 #include<vector>
 #include"Flight.h"
+#include"Passenger.h"
 namespace AirlineReseravtion {
 
 	class Database {
@@ -13,7 +14,12 @@ namespace AirlineReseravtion {
 
 		void displayAllFlights() const;
 
+		Passenger& addPassenger(const string& firstName, const string& lastName, const string& gender, const string& emailId,
+			const string& address, const string& city, const string& state, const string& postalCode,const string& phoneNumber);
+
+		Passenger& getPassengerInfo(const string& emailId);
 	private:
 		vector<Flight> mFlights;
+		vector<Passenger> mPassengers;
 	};
 }
