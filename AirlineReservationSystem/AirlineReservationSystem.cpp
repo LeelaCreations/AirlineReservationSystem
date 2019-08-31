@@ -5,15 +5,20 @@
 #include <iostream>
 #include"Database.h"
 #include<sstream>
-
+#include<time.h>
 using namespace std;
 using namespace AirlineReseravtion;
 int DisplayMenu();
 void addFlight(Database& db);
 void getFlightSchedule(Database& db);
 void getPassengerInfo(Database& db);
+void getTicketInfo(Database& db);
+void reserveSeat(Database& db);
 vector<string> split(string str, string sep);
 char ch;
+int call = 0;
+char seatletter[] = { 'A','B','C','D','E','F' };
+int confirmationId;
 int main()
 {
 
@@ -24,7 +29,7 @@ int main()
 		switch (selection)
 		{
 		case 1:
-			addFlight(flightDB);
+			reserveSeat(flightDB);
 			break;
 		case 2:
 			getFlightSchedule(flightDB);
@@ -36,14 +41,19 @@ int main()
 			getPassengerInfo(flightDB);
 			break;
 		case 5:
+			getTicketInfo(flightDB);
 			break;
 		case 6:
-			return 0;			
+			addFlight(flightDB);
+			break;
+		case 7:
+			return 0;
 		}
 	}
 }
 int DisplayMenu()
 {
+	srand(time(NULL));
 	int selection;
 	cout << endl;
 	cout << "=================== Welcome to Airline Reservation System =======================" << endl;
@@ -52,7 +62,8 @@ int DisplayMenu()
 	cout << "        3. All Flight Details" << endl;
 	cout << "        4. Display Passenger Info" << endl;
 	cout << "        5. User Ticket Information" << endl;
-	cout << "        6. Exit the Menu" << endl;
+	cout << "        6. Add Flight" << endl;
+	cout << "        7. Exit the Menu" << endl;
 	cout << "=================================================================================" << endl;
 
 	cin >> selection;
@@ -158,7 +169,7 @@ void getFlightSchedule(Database& db)
 void getPassengerInfo(Database& db)
 {
 	string emailId;
-	cout << "Please enter the emailID" << endl;
+	cout << "Please enter the emailID: ";
 	cin >> emailId;
 	Passenger passenger = db.getPassengerInfo(emailId);
 	cout << "First Name: " << passenger.getFirstName()<<endl;
@@ -169,6 +180,110 @@ void getPassengerInfo(Database& db)
 	cout << "State: " << passenger.getState() << endl;
 	cout << "PostalCode: " << passenger.getPostalCode() << endl;
 	cout << "Phone Number: " << passenger.getPhoneNumber() << endl;
+}
 
+void getTicketInfo(Database& db)
+{
+	int confirmationID;
+	cout << "PLease enter the confirmationId: ";
+	cin >> confirmationID;
+	vector<Ticket> tickets = db.getTicketInfo(confirmationID);
+	cout << "ConfirmationId FirstName LastName Source Destination SeatNumber FlightNumber DepartureDate DepartureTime" << endl;
+	for (const auto& ticket : tickets) {
+		cout << ticket.getConfirmationId() << " " << ticket.getFirstName() << " " << ticket.getLastName() << ticket.getSource() << " " << ticket.getDestination() << " " << ticket.getSeatNumber() << " " << ticket.getFlightNumber() << " " << ticket.getDepartureDate() << " " << ticket.getDepartureTime() << endl;
+	}
+}
+
+void reserveSeat(Database& db)
+{
+	int i = call;
+	char seatletter = NULL;
+	seatletter = seatletter[&i];
+	vector<Flight> searchedFlights;
+	string departureDate;
+	string source;
+	string destination;
+	int numberOfTravellers;
+
+	string flightNumber;
+	Flight flightSchedule;
+
+	string FirstName;
+	string LastName;
+	string Gender;
+	string EmailId;
+	string Adress;
+	string City;
+	string State;
+	string PostalCode;
+	string PhoneNumber;
+
+	string seatNumber;
+	
+
+
+	cout << "Please enter the Source: ";
+	cin >> source;
+	cout << "Please enter the Destination: ";
+	cin >> destination;
+	cout << "Please enter the departure date: ";
+	cin >> departureDate;
+	cout << "Please enter the number of travellers: ";
+	cin >> numberOfTravellers;
+
+	
+	searchedFlights = db.searchFlights(source, destination, departureDate, numberOfTravellers);
+
+	cout << "Available Flights" << endl;
+	cout << "--------------------" << endl;
+	cout << "flightNumber	airways	  source   destination	availableSeats	departureDate	 arrivalDate	numberofStops" << endl;
+	for (const auto& flight : searchedFlights) {
+		flight.display();
+	}
+
+	cout << "Please choose the Flight number: ";
+	cin >> flightNumber;
+	confirmationId = rand() % 9000 + 1000;
+	//selected Flight details
+	flightSchedule = db.getFlightSchedule(flightNumber);
+	
+	//enter passenger Info
+	for (int i = 0; i < numberOfTravellers; i++) {
+		cout << "Please enter the Passenger Info" << endl;
+		cout << "First Name: ";
+		cin >> FirstName;
+
+		cout << "Last Name: ";
+		cin >> LastName;
+
+		cout << "Gender: ";
+		cin >> Gender;
+
+		cout << "EmailId :";
+		cin >> EmailId;
+
+		cout << "Address :";
+		cin >> Adress;
+
+		cout << "City :";
+		cin >> City;
+
+		cout << "State: ";
+		cin >> State;
+
+		cout << "postalCode: ";
+		cin >> PostalCode;
+
+		cout << "Phone Number: ";
+		cin >> PhoneNumber;
+
+		db.addPassenger(FirstName, LastName, Gender, EmailId, Adress, City, State, PostalCode, PhoneNumber);
+		seatNumber = seatletter + (i+1);	
+		db.addticket(confirmationId, FirstName, LastName, source, destination, seatNumber, flightNumber, departureDate, flightSchedule.getDepartureTime());
+	}
+	//Generating 4 digit random confirmationId
+	//srand(time(0));
+	call = call + 1;
+	cout << "your seat(s) are reserved. Your confirmationId: " << confirmationId << endl;
 
 }

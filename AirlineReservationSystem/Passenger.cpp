@@ -69,7 +69,7 @@ namespace AirlineReseravtion {
 
 	const string & Passenger::getCity() const
 	{
-		return mCity
+		return mCity;
 	}
 
 	void Passenger::setState(const string & state)
