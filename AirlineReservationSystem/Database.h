@@ -28,11 +28,13 @@ namespace AirlineReseravtion {
 		Ticket& addticket(int confirmationID, const string& firstName, const string& lastName, const string& source, const string& destination,
 			const string& seatNumber, const string& flightNumber, const string& departureDate, const string& departureTime);
 		vector<Ticket>& getTicketInfo(const int confirmationId);
+
+		vector<Flight> mSearchedFlights;
+		vector<Ticket> mgetTickets;
 	private:
 		vector<Flight> mFlights;
 		vector<Passenger> mPassengers;
 		vector<Ticket> mTickets;
-		vector<Flight> mSearchedFlights;
-		vector<Ticket> mgetTickets;
+		
 	};
 }

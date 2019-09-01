@@ -190,15 +190,16 @@ void getTicketInfo(Database& db)
 	vector<Ticket> tickets = db.getTicketInfo(confirmationID);
 	cout << "ConfirmationId FirstName LastName Source Destination SeatNumber FlightNumber DepartureDate DepartureTime" << endl;
 	for (const auto& ticket : tickets) {
-		cout << ticket.getConfirmationId() << " " << ticket.getFirstName() << " " << ticket.getLastName() << ticket.getSource() << " " << ticket.getDestination() << " " << ticket.getSeatNumber() << " " << ticket.getFlightNumber() << " " << ticket.getDepartureDate() << " " << ticket.getDepartureTime() << endl;
+		cout << ticket.getConfirmationId() << " " << ticket.getFirstName() << " " << ticket.getLastName() <<" "<< ticket.getSource() << " " << ticket.getDestination() << " " << ticket.getSeatNumber() << " " << ticket.getFlightNumber() << " " << ticket.getDepartureDate() << " " << ticket.getDepartureTime() << endl;
 	}
+	db.mgetTickets.clear();
 }
 
 void reserveSeat(Database& db)
 {
 	int i = call;
-	char seatletter = NULL;
-	seatletter = seatletter[&i];
+	char seatlet = NULL;
+	seatlet = seatletter[i];
 	vector<Flight> searchedFlights;
 	string departureDate;
 	string source;
@@ -278,12 +279,12 @@ void reserveSeat(Database& db)
 		cin >> PhoneNumber;
 
 		db.addPassenger(FirstName, LastName, Gender, EmailId, Adress, City, State, PostalCode, PhoneNumber);
-		seatNumber = seatletter + (i+1);	
+		seatNumber = seatlet + to_string(i);
 		db.addticket(confirmationId, FirstName, LastName, source, destination, seatNumber, flightNumber, departureDate, flightSchedule.getDepartureTime());
 	}
 	//Generating 4 digit random confirmationId
 	//srand(time(0));
 	call = call + 1;
 	cout << "your seat(s) are reserved. Your confirmationId: " << confirmationId << endl;
-
+	db.mSearchedFlights.clear();
 }
