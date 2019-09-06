@@ -14,15 +14,18 @@ void getFlightSchedule(Database& db);
 void getPassengerInfo(Database& db);
 void getTicketInfo(Database& db);
 void reserveSeat(Database& db);
+bool dateValidation(string date);
+bool timevalidation(string time);
+bool flightNumberValidation(string flightNumber);
 vector<string> split(string str, string sep);
 char ch;
 int call = 0;
 char seatletter[] = { 'A','B','C','D','E','F' };
 int confirmationId;
+Database flightDB;
 int main()
 {
-
-	Database flightDB;
+	
 	while (true)
 	{
 		int selection = DisplayMenu();
@@ -87,7 +90,7 @@ void addFlight(Database& db)
 	
 	cout << "flightNumber :";
 	cin >> flightNumber;
-
+	if (flightNumberValidation(flightNumber)) { cout << "Flight Number already exists. Please enter unique number"; return; }
 	cout << "airways :";
 	cin >> airways;
 
@@ -102,13 +105,19 @@ void addFlight(Database& db)
 
 	cout << "departureDate :";	
 	cin >> departureDate;	
-	
+	if (dateValidation(departureDate)) {
+		cout << "Please enter the valida date";
+		return;
+	}
 	cout << "departureTime :";
 	cin >> departureTime;
 
 	cout << "arrivalDate :";
 	cin >> arrivalDate;	
-
+	if (dateValidation(arrivalDate)) {
+		cout << "Please enter the valida date";
+		return;
+	}
 	cout << "arrivalTime :";
 	cin >> arrivalTime;
 
@@ -171,15 +180,19 @@ void getPassengerInfo(Database& db)
 	string emailId;
 	cout << "Please enter the emailID: ";
 	cin >> emailId;
-	Passenger passenger = db.getPassengerInfo(emailId);
-	cout << "First Name: " << passenger.getFirstName()<<endl;
-	cout << "Last Name: " << passenger.getLastName()<<endl;
-	cout << "Gender: " << passenger.getGender() << endl;
-	cout << "Address: " << passenger.getAddress() << endl;
-	cout << "City: " << passenger.getCity() << endl;
-	cout << "State: " << passenger.getState() << endl;
-	cout << "PostalCode: " << passenger.getPostalCode() << endl;
-	cout << "Phone Number: " << passenger.getPhoneNumber() << endl;
+	vector<Passenger> passengers = db.getPassengerInfo(emailId);
+	if (passengers.empty()) { cout << "No passenger exists with the email id"; return; }
+	for (const auto& passenger : passengers) {
+		cout << "First Name: " << passenger.getFirstName() << endl;
+		cout << "Last Name: " << passenger.getLastName() << endl;
+		cout << "Gender: " << passenger.getGender() << endl;
+		cout << "Address: " << passenger.getAddress() << endl;
+		cout << "City: " << passenger.getCity() << endl;
+		cout << "State: " << passenger.getState() << endl;
+		cout << "PostalCode: " << passenger.getPostalCode() << endl;
+		cout << "Phone Number: " << passenger.getPhoneNumber() << endl;
+	}
+	db.mgetPassenger.clear();
 }
 
 void getTicketInfo(Database& db)
@@ -188,6 +201,7 @@ void getTicketInfo(Database& db)
 	cout << "PLease enter the confirmationId: ";
 	cin >> confirmationID;
 	vector<Ticket> tickets = db.getTicketInfo(confirmationID);
+	if (tickets.empty()) { cout << "There is no ticket available with that confirmation id"; return; }
 	cout << "ConfirmationId FirstName LastName Source Destination SeatNumber FlightNumber DepartureDate DepartureTime" << endl;
 	for (const auto& ticket : tickets) {
 		cout << ticket.getConfirmationId() << " " << ticket.getFirstName() << " " << ticket.getLastName() <<" "<< ticket.getSource() << " " << ticket.getDestination() << " " << ticket.getSeatNumber() << " " << ticket.getFlightNumber() << " " << ticket.getDepartureDate() << " " << ticket.getDepartureTime() << endl;
@@ -229,12 +243,16 @@ void reserveSeat(Database& db)
 	cin >> destination;
 	cout << "Please enter the departure date: ";
 	cin >> departureDate;
+	if (dateValidation(departureDate)) {
+		cout << "Please enter the valida date";
+		return;
+	}
 	cout << "Please enter the number of travellers: ";
 	cin >> numberOfTravellers;
 
 	
 	searchedFlights = db.searchFlights(source, destination, departureDate, numberOfTravellers);
-
+	if (searchedFlights.empty()) { cout << "There are no Flights available"; return; }
 	cout << "Available Flights" << endl;
 	cout << "--------------------" << endl;
 	cout << "flightNumber	airways	  source   destination	availableSeats	departureDate	 arrivalDate	numberofStops" << endl;
@@ -244,6 +262,12 @@ void reserveSeat(Database& db)
 
 	cout << "Please choose the Flight number: ";
 	cin >> flightNumber;
+	bool exists = false;
+	for (const auto& flight : searchedFlights) {
+		if (flight.getFlightNumber() == flightNumber) { exists = true; }
+	}
+	if (!exists) { cout << "Please choose flight from above list"; db.mSearchedFlights.clear(); return; }
+
 	confirmationId = rand() % 9000 + 1000;
 	//selected Flight details
 	flightSchedule = db.getFlightSchedule(flightNumber);
@@ -287,4 +311,33 @@ void reserveSeat(Database& db)
 	call = call + 1;
 	cout << "your seat(s) are reserved. Your confirmationId: " << confirmationId << endl;
 	db.mSearchedFlights.clear();
+}
+bool dateValidation(string date) {
+	stringstream ss(date);
+	int year, month, day;
+	ss >> month >> ch >> day >> ch >> year;
+	if (year < 2019 || month > 12 || day > 31)
+		return true;
+	else
+		return false;
+}
+bool timevalidation(string time) {
+	stringstream ss(time);
+	int hrs, mins;
+	ss >> hrs >> ch >> mins;
+	if (hrs > 23 || mins > 59)
+		return true;
+	else
+		return false;
+}
+bool flightNumberValidation(string flightNumber)
+{
+	bool exists = false;
+	for (auto& flight : flightDB.GetAllFlights())
+	{
+		if (flight.getFlightNumber() == flightNumber) {
+			exists = true;
+		}
+	}
+	return exists;
 }

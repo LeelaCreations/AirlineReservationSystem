@@ -35,7 +35,10 @@ namespace AirlineReseravtion {
 		}
 		throw logic_error("No Flight found");
 	}
-
+	vector<Flight>& Database::GetAllFlights()
+	{
+		return mFlights;
+	}
 	void Database::displayAllFlights() const
 	{
 		cout << "flightNumber	airways	  source   destination	availableSeats	departureDate	 arrivalDate	numberofStops" << endl;
@@ -54,13 +57,14 @@ namespace AirlineReseravtion {
 		return mPassengers[mPassengers.size() - 1];
 	}
 
-	Passenger& Database::getPassengerInfo(const string& emailID)
+	vector<Passenger>& Database::getPassengerInfo(const string& emailID)
 	{
 		for (auto& passenger : mPassengers)
 		{
-			if (passenger.getEmailId() == emailID){ return passenger; }
+			if (passenger.getEmailId() == emailID){ mgetPassenger.push_back(passenger); }
 				
 		}
+		return mgetPassenger;
 		throw logic_error("No Passenger found");
 	}
 

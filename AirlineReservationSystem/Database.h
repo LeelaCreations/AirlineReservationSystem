@@ -17,12 +17,12 @@ namespace AirlineReseravtion {
 
 		Flight& getFlightSchedule(const string& flightNumber);
 		void displayAllFlights() const;
-
+		vector<Flight>& GetAllFlights();
 		//Passenger Methods
 		Passenger& addPassenger(const string& firstName, const string& lastName, const string& gender, const string& emailId,
 			const string& address, const string& city, const string& state, const string& postalCode,const string& phoneNumber);
 
-		Passenger& getPassengerInfo(const string& emailId);
+		vector<Passenger>& getPassengerInfo(const string& emailId);
 
 		//Ticket Methods
 		Ticket& addticket(int confirmationID, const string& firstName, const string& lastName, const string& source, const string& destination,
@@ -31,6 +31,7 @@ namespace AirlineReseravtion {
 
 		vector<Flight> mSearchedFlights;
 		vector<Ticket> mgetTickets;
+		vector<Passenger>mgetPassenger;
 	private:
 		vector<Flight> mFlights;
 		vector<Passenger> mPassengers;
