@@ -103,22 +103,22 @@ void addFlight(Database& db)
 	cout << "availableSeats :";
 	cin >> availableSeats;
 
-	cout << "departureDate :";	
+	cout << "departureDate(mm/dd/yyyy) :";	
 	cin >> departureDate;	
 	if (dateValidation(departureDate)) {
 		cout << "Please enter the valida date";
 		return;
 	}
-	cout << "departureTime :";
+	cout << "departureTime(hh:mm) :";
 	cin >> departureTime;
 
-	cout << "arrivalDate :";
+	cout << "arrivalDate(mm/dd/yyyy) :";
 	cin >> arrivalDate;	
 	if (dateValidation(arrivalDate)) {
 		cout << "Please enter the valida date";
 		return;
 	}
-	cout << "arrivalTime :";
+	cout << "arrivalTime(hh:mm) :";
 	cin >> arrivalTime;
 
 	cout << "numberofStops :";
@@ -241,7 +241,7 @@ void reserveSeat(Database& db)
 	cin >> source;
 	cout << "Please enter the Destination: ";
 	cin >> destination;
-	cout << "Please enter the departure date: ";
+	cout << "Please enter the departure date(mm/dd/yyyy): ";
 	cin >> departureDate;
 	if (dateValidation(departureDate)) {
 		cout << "Please enter the valida date";
